@@ -21,22 +21,27 @@ public class Movement : MonoBehaviour
         CanJump = true;
         CanDoubleJump = false;
         DoubleJump = false;
-        MaxJump = 5.6f;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log( GetComponent<Rigidbody2D>().velocity);
-        if(GetComponent<Rigidbody2D>().velocity.y > MaxJump)
-        {
-            GetComponent<Rigidbody2D>().velocity =new Vector2(GetComponent<Rigidbody2D>().velocity.x,MaxJump);
-        }
+        //Debug.Log( GetComponent<Rigidbody2D>().velocity);
+       
 
         transform.position += new Vector3(Input.GetAxis("Horizontal"),0f,0f)*Time.deltaTime * Velocity;
+        if(!Fly)
+        {
+            if (GetComponent<Rigidbody2D>().velocity.y > MaxJump)
+            {
+                GetComponent<Rigidbody2D>().velocity = new Vector2(GetComponent<Rigidbody2D>().velocity.x, MaxJump);
+            }
+        }
 
         if (Fly)
         {
+            Velocity = 12;
             GetComponent<Rigidbody2D>().gravityScale = 0;
             GetComponent<Rigidbody2D>().AddForce(Jumperu * Time.deltaTime * 0.1f);
         }
@@ -76,6 +81,19 @@ public class Movement : MonoBehaviour
         {
             Destroy(collision.gameObject);
             DoubleJump = true;
+        }
+        else if (collision.gameObject.tag == "Fly")
+        {
+            Destroy(collision.gameObject);
+            Fly = true;
+        }
+        else if(collision.gameObject.tag == "Rocket")
+        {
+            transform.position = new Vector3(0.0f, 156.0f, 0.0f);
+           // GetComponent<Rigidbody2D>().rotation = 0;
+            GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+            GetComponent<Rigidbody2D>().AddForce(Jumperu * Time.deltaTime * Jump/2);
+
         }
     }
 }
