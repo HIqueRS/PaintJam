@@ -112,7 +112,9 @@ public class Movement : MonoBehaviour
         if(collision.gameObject.tag == "Frag")
         {
             Debug.Log(collision.gameObject.tag);
-            collision.gameObject.SetActive(false);
+            //collision.gameObject.SetActive(false);
+            collision.gameObject.GetComponent<BoxCollider2D>().enabled = false;
+            collision.gameObject.GetComponent<SpriteRenderer>().enabled = false;
             //collision.gameObject.GetComponent<BoxCollider2D>().enabled = false;
             Frags++;
         }
