@@ -12,6 +12,8 @@ public class Movement : MonoBehaviour
     public bool DoubleJump;
     public bool Fly;
     public float MaxJump;
+    public int Frags;
+    int NrmDeath;
 
 
     // Start is called before the first frame update
@@ -21,7 +23,8 @@ public class Movement : MonoBehaviour
         CanJump = true;
         CanDoubleJump = false;
         DoubleJump = false;
-        
+        Frags = 0;
+        NrmDeath = 0;
     }
 
     // Update is called once per frame
@@ -93,7 +96,25 @@ public class Movement : MonoBehaviour
            // GetComponent<Rigidbody2D>().rotation = 0;
             GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
             GetComponent<Rigidbody2D>().AddForce(Jumperu * Time.deltaTime * Jump/2);
+            NrmDeath++;
 
+        }
+    }
+
+    public int NmrDeath()
+    {
+        return NrmDeath;
+    }
+   
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        
+        if(collision.gameObject.tag == "Frag")
+        {
+            Debug.Log(collision.gameObject.tag);
+            collision.gameObject.SetActive(false);
+            //collision.gameObject.GetComponent<BoxCollider2D>().enabled = false;
+            Frags++;
         }
     }
 }
