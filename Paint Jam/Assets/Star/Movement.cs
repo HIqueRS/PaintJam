@@ -11,6 +11,7 @@ public class Movement : MonoBehaviour
     bool CanDoubleJump;
     public bool DoubleJump;
     public bool Fly;
+    public float MaxJump;
 
 
     // Start is called before the first frame update
@@ -20,11 +21,18 @@ public class Movement : MonoBehaviour
         CanJump = true;
         CanDoubleJump = false;
         DoubleJump = false;
+        MaxJump = 5.6f;
     }
 
     // Update is called once per frame
     void Update()
-    {      
+    {
+        Debug.Log( GetComponent<Rigidbody2D>().velocity);
+        if(GetComponent<Rigidbody2D>().velocity.y > MaxJump)
+        {
+            GetComponent<Rigidbody2D>().velocity =new Vector2(GetComponent<Rigidbody2D>().velocity.x,MaxJump);
+        }
+
         transform.position += new Vector3(Input.GetAxis("Horizontal"),0f,0f)*Time.deltaTime * Velocity;
 
         if (Fly)
@@ -52,7 +60,8 @@ public class Movement : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.tag == "Floor")
+        Debug.Log(collision.gameObject.tag);
+        if (collision.gameObject.tag == "Floor")
         {
             if(transform.position.y > collision.transform.position.y)
             {
@@ -62,7 +71,11 @@ public class Movement : MonoBehaviour
                     CanDoubleJump = true;
                 }
             }
-            
+        }
+        else if(collision.gameObject.tag == "DoubleJump")
+        {
+            Destroy(collision.gameObject);
+            DoubleJump = true;
         }
     }
 }
