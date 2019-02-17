@@ -8,12 +8,18 @@ public class Movement : MonoBehaviour
     public int Jump = 1;
     Vector2 Jumperu;
     bool CanJump;
+    bool CanDoubleJump;
+    public bool DoubleJump;
+    public bool Fly;
+
 
     // Start is called before the first frame update
     void Start()
     {
         Jumperu =new Vector2 (0.0f, 1000f);
         CanJump = true;
+        CanDoubleJump = false;
+        DoubleJump = false;
     }
 
     // Update is called once per frame
@@ -21,14 +27,30 @@ public class Movement : MonoBehaviour
     {      
         transform.position += new Vector3(Input.GetAxis("Horizontal"),0f,0f)*Time.deltaTime * Velocity;
 
-        if(CanJump)
+        if (Fly)
+        {
+            GetComponent<Rigidbody2D>().gravityScale = 0;
+            GetComponent<Rigidbody2D>().AddForce(Jumperu * Time.deltaTime * 0.1f);
+        }
+        else if (CanJump)
         {
             if (Input.GetKeyDown("joystick button 0")||Input.GetKeyDown("space"))
             {
-                CanJump = false;
-                GetComponent<Rigidbody2D>().AddForce(Jumperu * Time.deltaTime * Jump);
+                if(CanDoubleJump)
+                {
+                    GetComponent<Rigidbody2D>().AddForce(Jumperu * Time.deltaTime * Jump);
+                    CanDoubleJump = false;
+                }
+                else
+                {
+                    GetComponent<Rigidbody2D>().AddForce(Jumperu * Time.deltaTime * Jump);
+                    CanJump = false;
+                }
             }
         }
+
+        
+        
        
     }
 
@@ -39,6 +61,10 @@ public class Movement : MonoBehaviour
             if(transform.position.y > collision.transform.position.y)
             {
                 CanJump = true;
+                if(DoubleJump)
+                {
+                    CanDoubleJump = true;
+                }
             }
             
         }
